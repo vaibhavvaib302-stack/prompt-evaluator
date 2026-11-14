@@ -192,6 +192,8 @@ function App() {
 
       <main className="mx-auto max-w-[1500px] space-y-6 px-6 py-7">
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          
+
           <div className="panel">
             <label className="field-label">Language model</label>
             <div className="relative">
@@ -291,7 +293,44 @@ function App() {
             })}
           </div>
         </section>
+        <section className="panel space-y-5">
+            <div>
+              <h2 className="text-lg font-bold">Visual Performance Analysis</h2>
+              <p className="text-sm text-slate-400">
+                Quality score comparison across prompting techniques
+              </p>
+            </div>
+                
+            {techniques.map((t) => {
+              const result = results[t.id]
+              const score = result?.status === 'complete' ? result.quality : 0
+                  
+              return (
+                <div key={t.id}>
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-sm font-medium text-slate-300">
+                      {t.name}
+                    </span>
+                    <span className="text-sm font-semibold text-violet-300">
+                      {result?.status === 'complete' ? `${score}%` : 'Not tested'}
+                    </span>
+                  </div>
 
+                  <div className="h-3 overflow-hidden rounded-full bg-slate-800">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-400 transition-all duration-700"
+                      style={{ width: `${score}%` }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+
+            <p className="border-t border-white/10 pt-3 text-xs text-slate-500">
+              Scores represent approximate word-overlap similarity with the expected
+              output. They should not be interpreted as actual model accuracy.
+            </p>
+        </section>
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Summary icon={CheckCircle2} label="Completed tests" value={`${techniques.filter(t => results[t.id]?.status === 'complete').length} / 3`} />
           <Summary icon={Target} label="Average quality score" value={completed ? `${Math.round(avgQuality)}%` : '—'} />
